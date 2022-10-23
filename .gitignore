@@ -1,3 +1,8 @@
+# project-sepcific gitignore files
+*.dcm
+*.csv
+LICENSE
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
