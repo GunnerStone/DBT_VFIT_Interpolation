@@ -1,0 +1,25 @@
+# sample config defaults file
+method: grid
+metric:
+  name: loss
+  goal: minimize
+parameters:
+  epochs:
+    value: 50
+  batch_size:
+    distribution: constant
+    value: 4
+  learning_rate:
+    distribution: constant
+    value: 0.001
+  model_choice:
+    distribution: categorical
+    values: 
+      - VFIT_S 
+      - VFIT_B
+  num_adjacent_slices:
+    distribution: categorical
+    values: 
+      - 3 
+      - 5
+      - 7
