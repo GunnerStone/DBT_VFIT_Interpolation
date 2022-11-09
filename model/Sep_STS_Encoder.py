@@ -54,13 +54,14 @@ class ResLayer(nn.Module):
 class SepSTSEncoder(nn.Module):
 
     def __init__(self, nf, NF, window_size, nh):
+        # print("HEHE")
         super(SepSTSEncoder, self).__init__()
         self.stem = nn.Sequential(
-            nn.Conv3d(in_channels=3, out_channels=nf[-1]//2, kernel_size=3, stride=1, padding=1),
+            nn.Conv3d(in_channels=3, out_channels=nf[-1]//2, kernel_size=3, stride=1, padding=1), #change in_channels to 3
             nn.LeakyReLU(negative_slope=0.2),
             ResBlock(nf[-1]//2, kernel_size=3),
         )
-
+        # print("Attempting the SepSTSEncoder")
         self.stage1 = SepSTSLayer(nf[-1], depth=2, num_frames=NF, num_heads=nh[0], window_size=window_size[0])
         self.stage2 = SepSTSLayer(nf[-2], depth=2, num_frames=NF, num_heads=nh[1], window_size=window_size[1])
         self.stage3 = SepSTSLayer(nf[-3], depth=6, num_frames=NF, num_heads=nh[2], window_size=window_size[2])
@@ -72,10 +73,14 @@ class SepSTSEncoder(nn.Module):
         self.down3 = nn.Conv3d(in_channels=nf[-3], out_channels=nf[-4], kernel_size=(3,3,3), stride=(1,2,2), padding=1)
 
     def forward(self, x):
+        
+        # print("Attempting the SepSTSEncoder2")
         x0 = self.stem(x)
-
+        # print("Got past the stem")
         x1 = self.down0(x0)
+        # print("Got past the down0")
         x1 = self.stage1(x1)
+        # print("Got past the stage1")
 
         x2 = self.down1(x1)
         x2 = self.stage2(x2)

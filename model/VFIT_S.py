@@ -84,7 +84,7 @@ class UNet_3D_3D(nn.Module):
 
         def SmoothNet(inc, ouc):
             return torch.nn.Sequential(
-                Conv_3d(inc, ouc, kernel_size=3, stride=1, padding=1, batchnorm=False),
+                Conv_3d(inc, ouc, kernel_size=3, stride=1, padding=1, batchnorm=False), #change kernel_size to 3
                 ResBlock(ouc, kernel_size=3),
             )
 
@@ -100,34 +100,34 @@ class UNet_3D_3D(nn.Module):
     def forward(self, frames):
         images = torch.stack(frames, dim=2)
         _, _, _, H, W = images.shape
-
+        # print(images.shape)
         ## Batch mean normalization works slightly better than global mean normalization, thanks to https://github.com/myungsub/CAIN
         mean_ = images.mean(2, keepdim=True).mean(3, keepdim=True).mean(4, keepdim=True)
         images = images - mean_
-
+        # print("checkpoint A")
         x_0, x_1, x_2, x_3, x_4 = self.encoder(images)
-
+        # print("checkpoint 2")
         dx_3 = self.lrelu(self.decoder[0](x_4, x_3.size()))
         dx_3 = joinTensors(dx_3 , x_3 , type=self.joinType)
-
+        # print("checkpoint 3")
         dx_2 = self.lrelu(self.decoder[1](dx_3, x_2.size()))
         dx_2 = joinTensors(dx_2 , x_2 , type=self.joinType)
-
+        # print("checkpoint 4")
         dx_1 = self.lrelu(self.decoder[2](dx_2, x_1.size()))
         dx_1 = joinTensors(dx_1 , x_1 , type=self.joinType)
-
+        # print("checkpoint 5")
         fea3 = self.smooth_ll(dx_3)
         fea2 = self.smooth_l(dx_2)
         fea1 = self.smooth(dx_1)
-
+        # print("checkpoint 6")
         out_ll = self.predict_ll(fea3, frames, x_2.size()[-2:])
-
+        # print("checkpoint 7")
         out_l = self.predict_l(fea2, frames, x_1.size()[-2:])
         out_l = F.interpolate(out_ll, size=out_l.size()[-2:], mode='bilinear') + out_l
-
+        # print("checkpoint 8")
         out = self.predict(fea1, frames, x_0.size()[-2:])
         out = F.interpolate(out_l, size=out.size()[-2:], mode='bilinear') + out
-
+        # print("checkpoint 9")
         if self.training:
             return out_ll, out_l, out
         else:

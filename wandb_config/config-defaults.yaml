@@ -8,7 +8,7 @@ parameters:
     value: 50
   batch_size:
     distribution: constant
-    value: 4
+    value: 1
   learning_rate:
     distribution: constant
     value: 0.001

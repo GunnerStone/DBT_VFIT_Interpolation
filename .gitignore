@@ -2,7 +2,11 @@
 *.dcm
 *.csv
 LICENSE
-
+*.pth
+*.json
+*.yaml
+*.txt
+*.wandb
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
