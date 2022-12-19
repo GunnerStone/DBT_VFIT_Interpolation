@@ -1,6 +1,9 @@
 # project-sepcific gitignore files
 *.dcm
 *.csv
+*.npy
+*.png
+
 LICENSE
 *.pth
 *.json
